@@ -7,9 +7,9 @@ function UserDetails() {
 
   const [user_name, setUserName] = useState('');
   const [user_email, setUserEmail] = useState('');
-  const [fetchedUserData, setFetchedUserData] = useState({});
+  const [fetchedUserData, setFetchedUserData] = useState([]);
   const [isUserRegistered, setIsUserRegistered] = useState(false);
-  const [hasUserAttemptedTest, setHasUserAttemptedTest] = useState('');
+  const [hasUserAttemptedTest, setHasUserAttemptedTest] = useState(true);
   const [registeration_msg, setRegisterationMsg] = useState('');
 
   const userNameChangeHandler = (e) => {
@@ -19,10 +19,36 @@ function UserDetails() {
     setUserEmail(e.target.value);
   }
 
+    const checkUsersData = () => {
+    user_name && user_email && axios.get('http://localhost:3000/usersData')
+    .then(response => {
+      let fetchedData = [];
+      let isTestAttempted = true;
+      console.log('Reponse Data: ', response.data)
+      fetchedData = response.data.filter(userObj => userObj.name === user_name && userObj.email === user_email)
+     console.log('Fetched Data: ', fetchedData);
+      if(fetchedData.length > 0) {
+        isTestAttempted = fetchedData[0].isTestAttempted;
+        setHasUserAttemptedTest(isTestAttempted);
+        setIsUserRegistered(true);
+        setRegisterationMsg('Registeration already done.')
+      }
+      else {
+        setHasUserAttemptedTest(false);
+        setIsUserRegistered(false);
+        setRegisterationMsg('Registeration Successful');
+      }
+      
+     
+    })
+    
+  }
 
+  const onRegisterHandler = (e) => {
+    e.preventDefault();
+    checkUsersData();
+  }
 
-
-  
   return (
     <div className='container-sm'>
       <div className='card' style={{ width: '40%', margin: '0 auto' }}>
@@ -50,7 +76,7 @@ function UserDetails() {
               </div>
             </div>
 
-            <button className='btn btn-info m-2 ms-0' type='submit'>Register</button>
+            <button onClick={onRegisterHandler} className='btn btn-info m-2 ms-0' type='submit'>Register</button>
 
           </form>
 
