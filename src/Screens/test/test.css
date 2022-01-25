@@ -1,0 +1,17 @@
+.test-description {
+    text-align: center;
+}
+
+.questions_container {
+    text-align: left;
+    margin: 0 auto;
+    width: 60%;
+}
+
+.question_card {
+    padding: 5px 0;
+}
+
+.question_type, .question_num_of_attempts {
+    text-align: right;
+}
