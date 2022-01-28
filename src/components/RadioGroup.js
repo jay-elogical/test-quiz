@@ -1,7 +1,7 @@
 import React from 'react';
 import disableRadioGroup from '../utils/disableRadioGroup';
 
-function RadioGroup({options, ques_id, noa}) {
+function RadioGroup({options, ques_id}) {
   // noa --> number of attempts
   let optionsArray = Object.entries(options);
     return (
