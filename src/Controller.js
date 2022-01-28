@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import UserDetails from './Screens/user_details/UserDetails';
+// import UserDetails from './Screens/user_details/UserDetails';
 import Test from './Screens/test/Test';
 
 
@@ -10,8 +10,7 @@ function Controller() {
         <div>
             <Router>
                 <Routes>
-                    <Route path='/' element={<UserDetails />} />
-                    <Route path='/test' element={<Test />} />
+                    <Route path='/' element={<Test />} />
                 </Routes>
             </Router>
         </div>

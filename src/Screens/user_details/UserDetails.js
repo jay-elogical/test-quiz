@@ -1,4 +1,4 @@
-
+import './userDetails.css'
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -12,20 +12,28 @@ function UserDetails() {
   const [isUserRegistered, setIsUserRegistered] = useState(false);
   const [hasUserAttemptedTest, setHasUserAttemptedTest] = useState(false);
   const [registeration_msg, setRegisterationMsg] = useState('');
+  const [startTest_msg, setStartTestMsg ] = useState(''); 
 
+  const setstateDefaults = () => {
+    setRegisterationMsg('');
+    setStartTestMsg('');
+    setIsUserRegistered(false);
+    setHasUserAttemptedTest(false);
+  }
+  
   const userNameChangeHandler = (e) => {
     setUserName(e.target.value);
+    setstateDefaults();
   }
   const userEmailChangeHandler = (e) => {
     setUserEmail(e.target.value);
+    setstateDefaults();
   }
 
-  useEffect(() => {
-    postUserData();
-  }, [isUserRegistered])
 
 
   const registerUser = () => {
+    setIsUserRegistered(false);
     user_name && user_email && axios.get('http://localhost:3000/usersData')
       .then(response => {
         let fetchedData = [];
@@ -35,8 +43,14 @@ function UserDetails() {
           setIsUserRegistered(true);
           let isTestAttempted = fetchedData[0].isTestAttempted;
           setHasUserAttemptedTest(isTestAttempted);
+          setRegisterationMsg('Registeration already done.')
         }
-        else setIsUserRegistered(false);
+        else {
+          postUserData();
+          setIsUserRegistered(false);
+          setHasUserAttemptedTest(false);
+          setRegisterationMsg('Registeration Successful..!')
+        }
       })
   }
 
@@ -46,15 +60,17 @@ function UserDetails() {
       email: user_email,
       isTestAttempted: false
     })
+    .then (resp => setFetchedUserId(resp.data.id))
   }
-
+ 
   const onRegisterHandler = (e) => {
     e.preventDefault();
     registerUser();
   }
 
   const onStartTestHandler = () => {
-    console.log('Start handler called..!')
+    console.log('Fetched User Id inside onStarthandler: ' , fetchedUserId);
+    hasUserAttemptedTest === true && setStartTestMsg('You have already attempted the test.')
     hasUserAttemptedTest === false && axios.patch(`http://localhost:3000/usersData/${fetchedUserId}`, {
       isTestAttempted: true
     })
@@ -92,13 +108,13 @@ function UserDetails() {
 
             </form>
 
-            <Typography>{registeration_msg}</Typography>
+            <p className='card-text'>{registeration_msg}</p>
 
             <Link to={hasUserAttemptedTest ? '/' : '/test'}>
               <button className='btn btn-primary m-2 ms-0' onClick={onStartTestHandler}>Start Test</button>
             </Link>
 
-            <Typography>{hasUserAttemptedTest && 'You have already attempted the test..!'}</Typography>
+            <p className='card-text'>{startTest_msg}</p>
           </div>
         </div>
       </div>
